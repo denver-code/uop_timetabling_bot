@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "uop_timetabling_bot"
+version = "0.1.0"
+description = ""
+authors = ["Ihor Savenko <csigorek@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "^3.17.0"
+icalendar = "^6.1.1"
+aiohttp = "^3.11.11"
+pytz = "^2024.2"
+redis = "^5.2.1"
+aioredis = "^2.0.1"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

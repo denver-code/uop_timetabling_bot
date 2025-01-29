@@ -1,0 +1,18 @@
+services:
+  uop_timetabling_bot:
+    build: .
+    restart: on-failure
+    depends_on:
+      - redis
+    environment:
+      - TZ=Europe/London
+  redis:
+    image: redis:6-alpine
+    restart: on-failure
+    volumes:
+      - redis-db:/data
+    ports:
+      - 6379:6379
+
+volumes:
+  redis-db:
