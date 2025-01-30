@@ -15,6 +15,10 @@ from time import time
 import json
 import os
 import re
+import ssl
+
+ssl_context = ssl.create_default_context()
+ssl_context.options |= 0x4  # Enable legacy renegotiation
 
 load_dotenv()
 
@@ -52,7 +56,7 @@ async def send_umami_event(user_id: int, event_type: str, event_data: dict = Non
     }
 
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(trust_env=True) as session:
             async with session.post(
                 UMAMI_URL,
                 json=payload,
@@ -60,6 +64,7 @@ async def send_umami_event(user_id: int, event_type: str, event_data: dict = Non
                     "Content-Type": "application/json",
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0",
                 },
+                ssl=ssl_context,
             ) as response:
                 logging.info(f"Umami analytics response: {response.status}")
                 return response.status == 200
@@ -121,7 +126,7 @@ async def delete_user_calendar_url(user_id: int) -> None:
 async def fetch_calendar(url: str):
     """Fetch and parse the ICS file from URL."""
     async with aiohttp.ClientSession(trust_env=True) as session:
-        async with session.get(url) as response:
+        async with session.get(url, ssl=ssl_context) as response:
             if response.status == 200:
                 ics_data = await response.text()
                 return Calendar.from_ical(ics_data)
